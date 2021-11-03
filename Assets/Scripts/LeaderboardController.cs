@@ -49,22 +49,22 @@ public class LeaderboardController : MonoBehaviour
         if (string.IsNullOrWhiteSpace(TodaysBestEndpoint)) throw new Exception("TodaysBestEndpoint is null or whiteSpace");
         if (string.IsNullOrWhiteSpace(AllTimeBestEndpoint)) throw new Exception("AllTimeBestEndpoint is null or whiteSpace");
 
+        Debug.Log("LeaderboardController running...");
 
-        if (PlayerScore == null)
-        {
-            UpdateList();
-        }
+        UpdateList();
     }
 
     private void UpdateList()
     {
         if (AllTimeScores != null)
         {
+            Debug.Log("Updating All time scoreboards");
             StartCoroutine(GetAllTimeHigh());
         }
 
         if (TodayScores != null)
         {
+            Debug.Log("Updating Today scoreboards");
             StartCoroutine(GetTodayHigh());
         }
     }
@@ -90,12 +90,13 @@ public class LeaderboardController : MonoBehaviour
     }
 
     private IEnumerator ApplyScore()
-    {
+    { 
         if (string.IsNullOrWhiteSpace(PlayerScore.text) ||  // if player have no score OR
-            string.IsNullOrWhiteSpace(GameManager.Instance.PlayerName)) // player have no name, BREAK!
+            string.IsNullOrWhiteSpace(GameManager.Instance.PlayerNameInput.GetComponent<TMP_InputField>().text)) // player have no name, BREAK!
             yield break;
 
-        var uriData = Uri.EscapeUriString($"?name={GameManager.Instance.PlayerName}&score={PlayerScore.text}"); // generate data string.
+        var playerName = GameManager.Instance.PlayerNameInput.GetComponent<TMP_InputField>().text;
+        var uriData = Uri.EscapeUriString($"?name={playerName}&score={PlayerScore.text}"); // generate data string.
 
         foreach (Transform child in AllTimeScores.transform)
         {
