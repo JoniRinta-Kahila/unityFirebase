@@ -147,8 +147,12 @@ public class LeaderboardController : MonoBehaviour
             if (webRequest.responseCode == 200)
             {
                 var res = JsonConvert.DeserializeObject<List<ScoreData>>(webRequest.downloadHandler.text);
-                InstantiateScoreRows(res, TodayScores);
+
+                // TODO for reason x, firebase doesn't sort the list of todays scores..
+                var sortedList = res.OrderBy(x => x.Score).Reverse().ToList<ScoreData>();
+                InstantiateScoreRows(sortedList, TodayScores);
             }
         }
     }
 }
+

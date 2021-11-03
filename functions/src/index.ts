@@ -52,5 +52,43 @@ app.get('/applyScore', async (req, res) => {
   res.sendStatus(200);
 });
 
-exports.api = functions.https.onRequest(app);
+app.get('/allTimeHigh', async (req, res) => {
+  const scores = await collection
+    .orderBy('score', 'desc')
+    .limit(10)
+    .get();
+  res.send(JSON.stringify(scores.docs.map((x) => {
+    const data = x.data() as IScoreDocument;
+    const date = new Date();
+    date.setUTCMilliseconds(data.date);
+    return {
+      ...data,
+      date: date.toJSON(),
+    };
+  })));
+});
 
+app.get('/todaysHigh', async (req, res) => {
+  const threshold = new Date();
+  threshold.setHours(0);
+  threshold.setMinutes(0);
+  threshold.setSeconds(0);
+
+  const scores = await collection
+    .orderBy('date', 'desc')
+    .where('date', '>=', threshold.getTime())
+    .orderBy('score', 'desc')
+    .limit(10)
+    .get();
+
+  res.send(JSON.stringify(scores.docs.map((x) => {
+    const data = x.data() as IScoreDocument;
+    const date = new Date(data.date);
+    return {
+      ...data,
+      date: date.toJSON(),
+    };
+  })));
+});
+
+exports.api = functions.https.onRequest(app);
