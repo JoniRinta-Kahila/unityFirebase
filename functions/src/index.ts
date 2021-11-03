@@ -7,18 +7,14 @@ import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import express from 'express';
 import cors from 'cors';
-import * as dotenv from 'dotenv';
 
-dotenv.config({ path: '.env' });
+const pem: string = functions.config().unityscores.privatekey.replace(/\\n/g, '\n');
 
-console.log(process.env.PROJECT_ID);
-console.log(process.env.PRIVATE_KEY);
-console.log(process.env.CLIENT_EMAIL);
 admin.initializeApp({
   credential: admin.credential.cert({
-    clientEmail: process.env.CLIENT_EMAIL,
-    privateKey: process.env.PRIVATE_KEY,
-    projectId: process.env.PROJECT_ID,
+    clientEmail: functions.config().unityscores.clientemail,
+    privateKey: pem,
+    projectId: functions.config().unityscores.projectid,
   }),
 });
 
@@ -43,6 +39,7 @@ app.get('/applyScore', async (req, res) => {
 
   if (!Number.isFinite(score) || !name || name.length > 50) {
     res.sendStatus(400);
+    return;
   }
 
   const document: IScoreDocument = {
