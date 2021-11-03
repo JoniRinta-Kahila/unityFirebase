@@ -575,7 +575,7 @@ MonoBehaviour:
   ScoreRowPrefab: {fileID: 4906450106660487006, guid: cb38f7665a532e4489395e2c6c1b198d, type: 3}
   TodayScores: {fileID: 628863875}
   AllTimeScores: {fileID: 895761839}
-  ApplyScoreEndpoint: 
+  ApplyScoreEndpoint: https://us-central1-unity-47f49.cloudfunctions.net/api/applyScore
   TodaysBestEndpoint: 
   AllTimeBestEndpoint: 
 --- !u!1 &628863875
